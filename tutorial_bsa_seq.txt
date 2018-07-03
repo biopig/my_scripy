@@ -1,0 +1,8 @@
+samtools mpileup -B /media/zz/2545f6e0-b726-4a77-ac12-9942e94489a2/DNA-seq/Z58_alignment/gatk/Z58_applybqsr.bam S3/S3_applybqsr.bam ZMDH_1/ZMDH_1_applybqsr.bam ZMDH_2/ZMDH_2_applybqsr.bam ZMDH_3/ZMDH_3_applybqsr.bam ZMDL_1/ZMDL_1_applybqsr.bam ZMDL_2/ZMDL_2_applybqsr.bam ZMDL_3/ZMDL_3_applybqsr.bam |awk '{if($1=="2"){print $0}}' >zhan.mpileup
+
+sed 's/\t\t/\t!\t!/g' zhan.Mpileup > Output.Mpileup
+
+perl /home/zz/biosoft/popoolation2_1201/mpileup2sync.pl --input Output.Mpileup --fastq-type Sanger --min-qual 20 --output zhan.sync #因为这个软件比较老了，对于质量值的识别还是以前的，现在illuminate的质量编码方式是+33，而其识别的是+64，所以需要将illuminate改为Sanger（质量字符有数字[0~9]的为Phred33，有小写字母[a~z]的为Phred64。）
+
+
+java -jar -Xmx6G /home/zz/biosoft/popoolation2_1201/mpileup2sync.jar --input zhan.mpileup --output zhan_java.sync --fastq-type illumina --threads 4
